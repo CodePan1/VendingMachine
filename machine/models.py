@@ -13,7 +13,7 @@ class VendingMachine(models.Model):
 class Product(models.Model):
     vending_machine = models.ForeignKey(VendingMachine, on_delete=models.SET_NULL, null=True)
     name = models.CharField(max_length=255)
-    stock = models.ImageField()
+    stock = models.DecimalField(max_digits=3)
     price = models.DecimalField(max_digits=5, decimal_places=2)
 
     def __str__(self):
