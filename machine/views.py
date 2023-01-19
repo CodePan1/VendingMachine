@@ -3,7 +3,7 @@ from django.http import JsonResponse, HttpResponseBadRequest
 import json
 
 # Create your views here.
-from machine.forms import VendingMachineForm
+from machine.forms import VendingMachineForm, ProductForm
 from machine.models import VendingMachine
 
 
@@ -35,3 +35,26 @@ def vending_machine_edit(request, pk):
         return JsonResponse({'pk': vending_machine.pk})
     else:
         return JsonResponse({'error': 'Invalid request method'})
+
+
+def vending_machine_delete(request, pk):
+    vending_machine = get_object_or_404(VendingMachine, pk=pk)
+    vending_machine.delete()
+    return JsonResponse({'message': 'Vending Machine deleted'})
+
+
+def product_create(request, vending_machine_pk):
+    vending_machine = get_object_or_404(VendingMachine, pk=vending_machine_pk)
+    if request.method == 'POST':
+        form = ProductForm(request.POST)
+        if form.is_valid():
+            product = form.save(commit=False)
+            product.vending_machine = vending_machine
+            product.save()
+            product_data = {"pk": product.pk}
+            return JsonResponse(product_data)
+    else:
+        form = ProductForm()
+    context = {'form': form, 'vending_machine': vending_machine}
+    return JsonResponse(json.dumps(context), safe=False)
+
