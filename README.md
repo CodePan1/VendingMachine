@@ -26,3 +26,6 @@ to do POST:
 4. example of valid input 
 KEY: name  VALUE: vending_machine 1 
 KEY: location VALUE: canteen
+
+### Problem
+error when try to edit both vending machine and product in machines
