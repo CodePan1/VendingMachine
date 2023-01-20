@@ -63,6 +63,22 @@ def product_create(request, vending_machine_pk):
 
 
 @csrf_exempt
+def product_edit(request, vending_machine_pk, product_pk):
+    vending_machine = get_object_or_404(VendingMachine, pk=vending_machine_pk)
+    product = get_object_or_404(Product, pk=product_pk)
+    if request.method == 'POST':
+        form = ProductForm(request.POST, instance=product)
+        if form.is_valid():
+            product = form.save()
+            product_data = model_to_dict(product)
+            return JsonResponse(product_data)
+    else:
+        form = ProductForm(instance=product)
+    var = {'form': form, 'vending_machine': vending_machine, 'product': product}
+    return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+
+@csrf_exempt
 def product_delete(request, vending_machine_pk, product_pk):
     vending_machine = get_object_or_404(VendingMachine, pk=vending_machine_pk)
     product = get_object_or_404(Product, vending_machine=vending_machine, pk=product_pk)

@@ -15,15 +15,19 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+
+from machine import views
 from machine.views import *
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('machine/create', vending_machine_create, name="create machine"),
-    path('machine/edit', vending_machine_edit, name="edit machine"),
-    path('machine/delete', vending_machine_delete, name="delete machine"),
-    path('product/create', product_create, name="create product"),
-    path('product/delete', product_delete, name="product delete"),
-    path('product/stock', product_stock, name="product stock")
-
+    path('vending-machine/create/', views.vending_machine_create, name='vending_machine_create'),
+    path('vending-machine/<int:pk>/edit/', views.vending_machine_edit, name='vending_machine_edit'),
+    path('vending-machine/<int:pk>/delete/', views.vending_machine_delete, name='vending_machine_delete'),
+    path('vending-machine/<int:vending_machine_pk>/product/create/', views.product_create, name='product_create'),
+    path('vending-machine/<int:vending_machine_pk>/product/<int:product_pk>/edit/', views.product_edit,
+         name='product_edit'),
+    path('vending-machine/<int:vending_machine_pk>/product/<int:product_pk>/delete/', views.product_delete,
+         name='product_delete'),
+    path('vending-machine/<int:vending_machine_pk>/product/<int:product_pk>/stock/', views.product_stock,
+         name='product_stock'),
 ]
