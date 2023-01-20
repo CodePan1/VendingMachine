@@ -1,3 +1,4 @@
+from django.forms import model_to_dict
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse, HttpResponseBadRequest
 import json
@@ -13,12 +14,12 @@ def vending_machine_create(request):
         form = VendingMachineForm(request.POST)
         if form.is_valid():
             vending_machine = form.save()
-            vending_machine_data = {"pk": vending_machine.pk}
+            vending_machine_data = model_to_dict(vending_machine)
             return JsonResponse(vending_machine_data)
     else:
-        form = VendingMachineForm()
-    context = {'form': form}
-    return JsonResponse(json.dumps(context), safe=False)
+        return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+
 
 
 def vending_machine_edit(request, pk):
