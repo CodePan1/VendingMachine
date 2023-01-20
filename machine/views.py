@@ -20,8 +20,7 @@ def vending_machine_create(request):
         return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 
-
-
+@csrf_exempt
 def vending_machine_edit(request, pk):
     vending_machine = get_object_or_404(VendingMachine, pk=pk)
     if request.method == 'POST':
@@ -39,12 +38,14 @@ def vending_machine_edit(request, pk):
         return JsonResponse({'error': 'Invalid request method'})
 
 
+@csrf_exempt
 def vending_machine_delete(request, pk):
     vending_machine = get_object_or_404(VendingMachine, pk=pk)
     vending_machine.delete()
     return JsonResponse({'message': 'Vending Machine deleted'})
 
 
+@csrf_exempt
 def product_create(request, vending_machine_pk):
     vending_machine = get_object_or_404(VendingMachine, pk=vending_machine_pk)
     if request.method == 'POST':
@@ -61,6 +62,7 @@ def product_create(request, vending_machine_pk):
     return JsonResponse(json.dumps(context), safe=False)
 
 
+@csrf_exempt
 def product_delete(request, vending_machine_pk, product_pk):
     vending_machine = get_object_or_404(VendingMachine, pk=vending_machine_pk)
     product = get_object_or_404(Product, vending_machine=vending_machine, pk=product_pk)
@@ -68,6 +70,7 @@ def product_delete(request, vending_machine_pk, product_pk):
     return JsonResponse({"message": "Product deleted successfully"})
 
 
+@csrf_exempt
 def product_stock(request, vending_machine_pk):
     if request.method == 'GET':
         vending_machine = get_object_or_404(VendingMachine, pk=vending_machine_pk)
