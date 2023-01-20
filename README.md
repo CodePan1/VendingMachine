@@ -18,5 +18,11 @@ use for verify the input
  ❯ python3 manage.py runserver    
  
 
-### problem
-when POST: it got serializable error
+### Postman simple tutorial
+to do POST:
+1. select "POST"
+2. In the "URL" field, enter the endpoint URL for your vending_machine_create view, which is likely to be "http://127.0.0.1:8000/machine/create"
+3. In the "Body" section, select form-data
+4. example of valid input 
+KEY: name  VALUE: vending_machine 1 
+KEY: location VALUE: canteen
