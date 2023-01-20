@@ -15,7 +15,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from machine.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('machine/create', vending_machine_create, name="create machine"),
+    path('machine/edit', vending_machine_edit, name="edit machine"),
+    path('machine/delete', vending_machine_delete, name="delete machine"),
+    path('product/create', product_create, name="create product"),
+    path('product/delete', product_delete, name="product delete"),
+    path('product/stock', product_stock, name="product stock")
+
 ]

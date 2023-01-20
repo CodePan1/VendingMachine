@@ -1,12 +1,13 @@
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse, HttpResponseBadRequest
 import json
-
+from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 from machine.forms import VendingMachineForm, ProductForm
-from machine.models import VendingMachine
+from machine.models import VendingMachine, Product
 
 
+@csrf_exempt
 def vending_machine_create(request):
     if request.method == 'POST':
         form = VendingMachineForm(request.POST)
@@ -58,3 +59,21 @@ def product_create(request, vending_machine_pk):
     context = {'form': form, 'vending_machine': vending_machine}
     return JsonResponse(json.dumps(context), safe=False)
 
+
+def product_delete(request, vending_machine_pk, product_pk):
+    vending_machine = get_object_or_404(VendingMachine, pk=vending_machine_pk)
+    product = get_object_or_404(Product, vending_machine=vending_machine, pk=product_pk)
+    product.delete()
+    return JsonResponse({"message": "Product deleted successfully"})
+
+
+def product_stock(request, vending_machine_pk):
+    if request.method == 'GET':
+        vending_machine = get_object_or_404(VendingMachine, pk=vending_machine_pk)
+        products = Product.objects.filter(vending_machine=vending_machine)
+        products_list = []
+        for product in products:
+            products_list.append({'name': product.name, 'stock': product.stock, 'price': product.price})
+        return JsonResponse({'products': products_list})
+    else:
+        return JsonResponse({'status': 'error'})
