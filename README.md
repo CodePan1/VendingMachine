@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ### The code is not fully done, but I implement to structure of Vending machine and product
 
 There are 3 important component in this implementation
@@ -29,3 +30,7 @@ KEY: location VALUE: canteen
 
 ### Problem
 error when try to edit both vending machine and product in machines
+=======
+# VendingMachine
+HW1 of the software engineering class
+>>>>>>> a1bdb4836bcb628d5574d8bcd70dc075084e3e2d
