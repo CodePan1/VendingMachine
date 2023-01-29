@@ -3,6 +3,7 @@ from django.shortcuts import get_object_or_404
 from django.http import JsonResponse, HttpResponseBadRequest
 import json
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_safe
 # Create your views here.
 from machine.forms import VendingMachineForm, ProductForm
 from machine.models import VendingMachine, Product
@@ -76,7 +77,7 @@ def product_edit(request, vending_machine_pk: int, product_pk: int) -> JsonRespo
             return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 
-@csrf_exempt
+@require_safe
 def product_delete(request, vending_machine_pk: int, product_pk: int) -> JsonResponse:
     vending_machine = get_object_or_404(VendingMachine, pk=vending_machine_pk)
     product = get_object_or_404(Product, vending_machine=vending_machine, pk=product_pk)
@@ -84,7 +85,7 @@ def product_delete(request, vending_machine_pk: int, product_pk: int) -> JsonRes
     return JsonResponse({"message": "Product deleted successfully"})
 
 
-@csrf_exempt
+@require_safe
 def product_stock(request, vending_machine_pk: int) -> JsonResponse:
     if request.method == 'GET':
         vending_machine = get_object_or_404(VendingMachine, pk=vending_machine_pk)
