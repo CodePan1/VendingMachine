@@ -9,7 +9,7 @@ from machine.models import VendingMachine, Product
 
 
 @csrf_exempt
-def vending_machine_create(request):
+def vending_machine_create(request) -> JsonResponse:
     if request.method == 'POST':
         form = VendingMachineForm(request.POST)
         if form.is_valid():
@@ -21,8 +21,8 @@ def vending_machine_create(request):
 
 
 @csrf_exempt
-def vending_machine_edit(request, pk):
-    vending_machine = get_object_or_404(VendingMachine, pk=pk)
+def vending_machine_edit(request, vending_machine_pk: int) -> JsonResponse:
+    vending_machine = get_object_or_404(VendingMachine, pk=vending_machine_pk)
     if request.method == 'POST':
         data = json.loads(request.body)
         try:
@@ -39,14 +39,14 @@ def vending_machine_edit(request, pk):
 
 
 @csrf_exempt
-def vending_machine_delete(request, pk):
-    vending_machine = get_object_or_404(VendingMachine, pk=pk)
+def vending_machine_delete(request, vending_machine_pk: int) -> JsonResponse:
+    vending_machine = get_object_or_404(VendingMachine, pk=vending_machine_pk)
     vending_machine.delete()
     return JsonResponse({'message': 'Vending Machine deleted'})
 
 
 @csrf_exempt
-def product_create(request, vending_machine_pk):
+def product_create(request, vending_machine_pk: int) -> JsonResponse:
     vending_machine = get_object_or_404(VendingMachine, pk=vending_machine_pk)
     if request.method == 'POST':
         form = ProductForm(request.POST)
@@ -63,7 +63,7 @@ def product_create(request, vending_machine_pk):
 
 
 @csrf_exempt
-def product_edit(request, vending_machine_pk, product_pk):
+def product_edit(request, vending_machine_pk: int, product_pk: int) -> JsonResponse:
     vending_machine = get_object_or_404(VendingMachine, pk=vending_machine_pk)
     product = get_object_or_404(Product, pk=product_pk, vending_machine=vending_machine)
     if request.method == 'POST':
@@ -77,7 +77,7 @@ def product_edit(request, vending_machine_pk, product_pk):
 
 
 @csrf_exempt
-def product_delete(request, vending_machine_pk, product_pk):
+def product_delete(request, vending_machine_pk: int, product_pk: int) -> JsonResponse:
     vending_machine = get_object_or_404(VendingMachine, pk=vending_machine_pk)
     product = get_object_or_404(Product, vending_machine=vending_machine, pk=product_pk)
     product.delete()
@@ -85,7 +85,7 @@ def product_delete(request, vending_machine_pk, product_pk):
 
 
 @csrf_exempt
-def product_stock(request, vending_machine_pk):
+def product_stock(request, vending_machine_pk: int) -> JsonResponse:
     if request.method == 'GET':
         vending_machine = get_object_or_404(VendingMachine, pk=vending_machine_pk)
         products = Product.objects.filter(vending_machine=vending_machine)
