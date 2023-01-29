@@ -9,6 +9,7 @@ from machine.models import VendingMachine, Product
 
 
 @require_safe
+# This view only allows GET and HEAD requests
 def vending_machine_create(request) -> JsonResponse:
     if request.method == 'POST':
         form = VendingMachineForm(request.POST)
