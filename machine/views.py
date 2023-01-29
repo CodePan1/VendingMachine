@@ -13,12 +13,14 @@ from machine.models import VendingMachine, Product
 def vending_machine_create(request) -> JsonResponse:
     if request.method == 'POST':
         form = VendingMachineForm(request.POST)
-        if form.is_valid():
-            vending_machine = form.save()
-            vending_machine_data = model_to_dict(vending_machine)
-            return JsonResponse(vending_machine_data)
-    else:
-        return JsonResponse({'error': 'Invalid request method'}, status=400)
+        if not form.is_valid():
+            return JsonResponse({'error': 'Invalid form data'}, status=400)
+
+        vending_machine = form.save()
+        vending_machine_data = model_to_dict(vending_machine)
+        return JsonResponse(vending_machine_data)
+
+    return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 
 @require_safe
@@ -49,32 +51,37 @@ def vending_machine_delete(request, vending_machine_pk: int) -> JsonResponse:
 @require_safe
 def product_create(request, vending_machine_pk: int) -> JsonResponse:
     vending_machine = get_object_or_404(VendingMachine, pk=vending_machine_pk)
-    if request.method == 'POST':
-        form = ProductForm(request.POST)
-        if form.is_valid():
-            product = form.save(commit=False)
-            product.vending_machine = vending_machine
-            product.save()
-            product_data = {"pk": product.pk}
-            return JsonResponse(product_data)
-    else:
+    if request.method != 'POST':
         form = ProductForm()
-    context = {'form': form, 'vending_machine': vending_machine}
-    return JsonResponse(json.dumps(context), safe=False)
+        context = {'form': form, 'vending_machine': vending_machine}
+        return JsonResponse(json.dumps(context), safe=False)
+
+    form = ProductForm(request.POST)
+    if not form.is_valid():
+        context = {'form': form, 'vending_machine': vending_machine}
+        return JsonResponse(json.dumps(context), safe=False)
+
+    product = form.save(commit=False)
+    product.vending_machine = vending_machine
+    product.save()
+    product_data = {"pk": product.pk}
+    return JsonResponse(product_data)
 
 
 @require_safe
 def product_edit(request, vending_machine_pk: int, product_pk: int) -> JsonResponse:
     vending_machine = get_object_or_404(VendingMachine, pk=vending_machine_pk)
     product = get_object_or_404(Product, pk=product_pk, vending_machine=vending_machine)
-    if request.method == 'POST':
-        form = ProductForm(request.POST, instance=product)
-        if form.is_valid():
-            product = form.save()
-            product_data = model_to_dict(product)
-            return JsonResponse(product_data)
-        else:
-            return JsonResponse({'error': 'Invalid request method'}, status=400)
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+    form = ProductForm(request.POST, instance=product)
+    if not form.is_valid():
+        return JsonResponse({'error': 'Invalid form data'}, status=400)
+
+    product = form.save()
+    product_data = model_to_dict(product)
+    return JsonResponse(product_data)
 
 
 @require_safe
