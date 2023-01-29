@@ -2,14 +2,13 @@ from django.forms import model_to_dict
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse, HttpResponseBadRequest
 import json
-from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_safe
 # Create your views here.
 from machine.forms import VendingMachineForm, ProductForm
 from machine.models import VendingMachine, Product
 
 
-@csrf_exempt
+@require_safe
 def vending_machine_create(request) -> JsonResponse:
     if request.method == 'POST':
         form = VendingMachineForm(request.POST)
@@ -21,7 +20,7 @@ def vending_machine_create(request) -> JsonResponse:
         return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 
-@csrf_exempt
+@require_safe
 def vending_machine_edit(request, vending_machine_pk: int) -> JsonResponse:
     vending_machine = get_object_or_404(VendingMachine, pk=vending_machine_pk)
     if request.method == 'POST':
@@ -39,14 +38,14 @@ def vending_machine_edit(request, vending_machine_pk: int) -> JsonResponse:
         return JsonResponse({'error': 'Invalid request method'})
 
 
-@csrf_exempt
+@require_safe
 def vending_machine_delete(request, vending_machine_pk: int) -> JsonResponse:
     vending_machine = get_object_or_404(VendingMachine, pk=vending_machine_pk)
     vending_machine.delete()
     return JsonResponse({'message': 'Vending Machine deleted'})
 
 
-@csrf_exempt
+@require_safe
 def product_create(request, vending_machine_pk: int) -> JsonResponse:
     vending_machine = get_object_or_404(VendingMachine, pk=vending_machine_pk)
     if request.method == 'POST':
@@ -63,7 +62,7 @@ def product_create(request, vending_machine_pk: int) -> JsonResponse:
     return JsonResponse(json.dumps(context), safe=False)
 
 
-@csrf_exempt
+@require_safe
 def product_edit(request, vending_machine_pk: int, product_pk: int) -> JsonResponse:
     vending_machine = get_object_or_404(VendingMachine, pk=vending_machine_pk)
     product = get_object_or_404(Product, pk=product_pk, vending_machine=vending_machine)
